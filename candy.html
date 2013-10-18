@@ -1,0 +1,259 @@
+<html>
+  <head>
+    <style type="text/css">
+      body {
+        background-color: #FFF;
+        text-align: center
+      }
+
+      h { border-color: yellow; }
+      h1 {
+        color: black;
+        text-align: center
+      }
+      h1 { margin: 10px 0px; border-top-style: outset; border-bottom-style: outset; }
+      h2 { margin: 10px 0px; border-style: solid; border-width: 1px; }
+      h3 { margin: 10px 0px; border-style: solid; border-width: 1px; }
+      h4 { margin: 10px 0px; border-style: solid; border-width: 1px; }
+      h5 { margin: 10px 0px; border-style: solid; border-width: 1px; }
+      h1.l { border-left-style: outset; border-right-style: hidden; }
+      h1.c { border-left-style: hidden; border-right-style: hidden; }
+      h1.r { border-left-style: hidden; border-right-style: outset; }
+      
+      div {
+        background-color: #333;
+      }
+
+      div.l {
+        background-color: #fcc;
+        width: 33.33%;
+        display: inline;
+        float: left;
+        border-width: 1px;
+      }
+
+      div.c {
+        background-color: #cfc;
+        width: 33.33%;
+        display: inline;
+        float: left;
+        border-width: 1px;
+      }
+
+      div.r {
+        background-color: #ccf;
+        width: 33.33%;
+        display: inline;
+        float: left;
+        border-width: 1px;
+      }
+
+      div.msg {
+        background-color: #fff;
+      }
+      
+      p { font-size: 30px; }
+
+      input { width: 75%; height: 100px; font-size: 30px; }
+    </style>
+    <script>
+
+var Candy = {
+  nc: {
+    name: "No Candy!",
+    offset: 0,
+    color: "orangered",
+    start: 100,
+    count: 0
+  },
+  tp: {
+    name: "Tooth Paste",
+    offset: 1,
+    color: "lawngreen",
+    start: 100,
+    count: 0
+  },
+  df: {
+    name: "Dental Floss",
+    offset: 2,
+    color: "Turquoise",
+    start: 100,
+    count: 0
+  },
+  snickers: {
+    name: "Snickers",
+    offset: 3,
+    color: "blue",
+    start: 16,
+    count: 5
+  },
+  skittles: {
+    name: "Skittles",
+    offset: 4,
+    color: "red",
+    start: 8,
+    count: 5
+  },
+  mm: {
+    name: "M&M's",
+    offset: 5,
+    color: "#803a02",
+    start: 12,
+    count: 5
+  },
+  mmp: {
+    name: "M&M Peanut",
+    offset: 6,
+    color: "yellow",
+    start: 12,
+    count: 5
+  },
+  musketeers: {
+    name: "Musketeers",
+    offset: 7,
+    color: "#aaaaaa",
+    start: 6,
+    count: 1
+  },
+  starbursts: {
+    name: "Starbursts",
+    offset: 8,
+    color: "orange",
+    start: 6,
+    count: 1
+  },
+};
+
+var SpinQueue = Array();
+
+function setReels (offset)
+{
+  var pos = ["l", "c", "r"];
+  var n = 9;
+  var pieces = new Array();
+  var i;
+  var myID = "";
+
+  for (p in Candy)
+  {
+    pieces.push(p);
+  }
+
+  document.getElementById("msg").innerHTML="You won some " + Candy[pieces[offset]].name + "!"
+
+  offset = (offset + 5) % n;
+
+  for (p in pos)
+  {
+    for (i=0; i < n; ++i)
+    {
+      myID = pos[p] + i;
+      j = (i + offset) % n;
+      document.getElementById(myID).innerHTML=Candy[pieces[j]].name;
+      //document.getElementById(myID).style.color=Candy[pieces[j]].color;
+      document.getElementById(myID).style.backgroundColor=Candy[pieces[j]].color;
+    }
+  }
+
+  for (i=n-1; i >= 0; --i)
+  {
+    myID = "c" + i;
+    j = (n - i - 1 + offset) % n;
+    document.getElementById(myID).innerHTML=Candy[pieces[j]].name
+    //document.getElementById(myID).style.color=Candy[pieces[j]].color;
+    document.getElementById(myID).style.backgroundColor=Candy[pieces[j]].color;
+  }
+
+
+}
+
+function timedSpin ()
+{
+  if (0 == SpinQueue.length)
+  {
+    return
+  }
+  var next = SpinQueue.shift()
+  setTimeout(function(){timedSpin()},200);
+  setReels(next);
+}
+
+function spin()
+{
+  var candyRemaining = new Array();
+
+  for (piece in Candy)
+  {
+    var i;
+    for(i = 0;  i < Candy[piece].count; ++i)
+    {
+      candyRemaining.push(Candy[piece]);
+    }
+  }
+
+  if (0 == candyRemaining.length)
+  {
+    return;
+  }
+  var rand = Math.floor(Math.random() * candyRemaining.length)
+  var o = candyRemaining[rand]
+  o.count --
+  //setReels(o.offset)
+
+  for (i=0; i < 9; ++i)
+  {
+    SpinQueue.push(i);
+  }
+  for (i=0; i <= o.offset; ++i)
+  {
+    SpinQueue.push(i);
+  }
+  timedSpin();
+}
+    </script>
+  </head>
+  <body onLoad="setReels(0)" >
+    <p>Wheel Of Candy!</p>
+    <div class=main>
+      <div class="l">
+        <h5 id="l0" class="l"></h5>
+        <h4 id="l1" class="l"></h4>
+        <h3 id="l2" class="l"></h3>
+        <h2 id="l3" class="l"></h2>
+        <h1 id="l4" class="l"></h1>
+        <h2 id="l5" class="l"></h2>
+        <h3 id="l6" class="l"></h3>
+        <h4 id="l7" class="l"></h4>
+        <h5 id="l8" class="l"></h5>
+      </div>
+      <div class="c">
+        <h5 id="c0" class="c"></h5>
+        <h4 id="c1" class="c"></h4>
+        <h3 id="c2" class="c"></h3>
+        <h2 id="c3" class="c"></h2>
+        <h1 id="c4" class="c"></h1>
+        <h2 id="c5" class="c"></h2>
+        <h3 id="c6" class="c"></h3>
+        <h4 id="c7" class="c"></h4>
+        <h5 id="c8" class="c"></h5>
+      </div>
+      <div class="r">
+        <h5 id="r0" class="r"></h5>
+        <h4 id="r1" class="r"></h4>
+        <h3 id="r2" class="r"></h3>
+        <h2 id="r3" class="r"></h2>
+        <h1 id="r4" class="r"></h1>
+        <h2 id="r5" class="r"></h2>
+        <h3 id="r6" class="r"></h3>
+        <h4 id="r7" class="r"></h4>
+        <h5 id="r8" class="r"></h5>
+      </div>
+    </div>
+    <div class="msg">
+      <p id="msg">You Won!</p>
+      <input type=button onClick="spin()" name="spin" value="Spin Again!"/>
+    </div>
+  </body>
+</html>
+
+<!-- vim: set tabstop=2 shiftwidth=2 expandtab : -->
